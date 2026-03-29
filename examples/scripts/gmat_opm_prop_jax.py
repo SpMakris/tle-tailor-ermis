@@ -77,9 +77,10 @@ print(r, v)
 # Since we're using python lists, you can enter multiple epochs and state
 # vectors to represent multiple satellites.
 
-epochs = ["05 Mar 2021 13:12:29.258"]
+epochs = ["30 Mar 2026 11:15:35.548"]
 
-states = [([-3173.91430404, -6203.94723041, 802.14005485], [-0.99114021, 1.42336564, 7.44539408])]
+# ERMIS3 OPM (2026-03-30). r in km, v in km/s, converted from ECEF m and m/s.
+states = [([4944.619339, 4622.088485, -1315.307908], [2.067721, -0.115980, 7.399782])]
 
 # Loop through OPM satellites and use GMAT to propagate the spacecraft forward
 # by 3 days using a high precision orbit propagator (Special Perturbations) to
@@ -101,9 +102,9 @@ for idx, (t, state) in enumerate(zip(epochs, states)):
     sat.SetField("VY", v[1])
     sat.SetField("VZ", v[2])
 
-    # You will want to set appropriate values for drag and mass specific to your staellites
-    sat.SetField("DragArea", 0.087) # m^2
-    sat.SetField("DryMass", 15) # kg
+    # ERMIS3: DragArea and DryMass from mission specification
+    sat.SetField("DragArea", 0.1294) # m^2
+    sat.SetField("DryMass", 11.25) # kg
 
     eph = gmat.GetObject("EphemerisFile1")
     eph.SetField("Filename", str(OUTPUT_DIR / f'EphemerisFile_Sat{idx}.e'))

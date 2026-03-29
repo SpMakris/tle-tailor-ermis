@@ -23,17 +23,39 @@ export SPACETRACK_PWD=your_password
 
 ## Running Scripts
 
-Scripts are run directly — there is no build step:
+Scripts are run directly — there is no build step. Use `py` (not `python` or `python3`) on this Windows system:
 ```bash
-python tlefit_equinoctial_fd.py
-python tlefit_equinoctial_jax.py
-python tlefit_coe_fd.py
-python tlefit_coe_jax.py
-python tlefit_equinoctial_eph_fd.py   # fits TLE to ephemeris (FD)
-python tlefit_equinoctial_eph_jax.py  # fits TLE to ephemeris (JAX)
+py examples/scripts/tlefit_coe_fd.py
+py examples/scripts/tlefit_eqn_fd.py
 ```
 
 Notebooks can be run interactively in Jupyter. There are no automated tests.
+
+## Examples
+
+Jupyter notebooks live in `examples/notebooks/`. Standalone Python equivalents live in `examples/scripts/`. Each script adds `REPO_ROOT = Path(__file__).resolve().parent.parent.parent` to `sys.path` so all source modules resolve correctly regardless of working directory.
+
+To run scripts non-interactively (e.g. for testing without a display):
+```bash
+py -c "import matplotlib; matplotlib.use('Agg'); import runpy; runpy.run_path('examples/scripts/tlefit_coe_fd.py', run_name='__main__')"
+```
+
+## GMAT
+
+GMAT R2025a is installed at `C:\GMAT_R2025a`. The Python API path is `C:\GMAT_R2025a\api`. GMAT scripts output ephemeris to `examples/scripts/output/`.
+
+**One-time API setup** (required before first use):
+```bash
+cd C:\GMAT_R2025a\api && py -3.12 BuildApiStartupFile.py
+```
+Then set `GmatInstall = r"C:\GMAT_R2025a"` in `C:\GMAT_R2025a\api\load_gmat.py`.
+
+**Python version**: GMAT R2025a supports Python 3.6–3.12 only. The system `py` is 3.13 and will fail with `ModuleNotFoundError: No module named '_py313'`. Use the `.venv` (Python 3.12):
+```bash
+py -3.12 -m venv .venv
+.venv/Scripts/pip install -r requirements.txt
+.venv/Scripts/python examples/scripts/ermis3_opm_to_tle.py
+```
 
 ## Architecture
 
